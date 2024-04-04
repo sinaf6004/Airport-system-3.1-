@@ -50,16 +50,20 @@ namespace Airport_2
         public string userName { get => UserName; }
         string FlightId;
         int SeatNumber;
+        public int seatNumber { get => SeatNumber; }
 
         public enum flightMode { Economy, Business, FirstClass }
         flightMode fl;
-        public void addPassengerToFlight()
+        public void addPassengerToFlight(int seat)
         {
-            Flight.AddPassenger(this, FlightId, UserName);
-            FileStream fs = new FileStream(@"D:\elmos\AP\homeworks\tamrin 3\Airport 2\Airport 2\bin\Debug\Flights\" + FlightId + "\\" + UserName + ".txt", FileMode.Create);
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(fs, this);
-            fs.Close();
+            if (Flight.AddPassenger(this, FlightId, UserName, seat))
+            {
+
+                FileStream fs = new FileStream(@"D:\elmos\AP\homeworks\tamrin 3\Airport 2\Airport 2\bin\Debug\Flights\" + FlightId + "\\" + UserName + ".txt", FileMode.Create);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, this);
+                fs.Close();
+            }
 
         }
         public void gradeGiving()
@@ -153,7 +157,7 @@ namespace Airport_2
             int youngCounter = 0;
             int middleAgedCounter = 0;
             int elderlyCounter = 0;
-            foreach(var passenger in passengers)
+            foreach (var passenger in passengers)
             {
                 switch (passenger.grade)
                 {

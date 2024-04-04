@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -115,7 +116,7 @@ namespace Airport_2
                             string name = Console.ReadLine();
                             Console.Write("Enter your Family Name: ");
                             string familyName = Console.ReadLine();
-                            Console.WriteLine("Enter your Gender (1. man , 2. woman");
+                            Console.WriteLine("Enter your Gender (1. man , 2. woman)");
                             int gender = int.Parse(Console.ReadLine()) - 1;
                             Console.WriteLine("Age:");
                             int age = int.Parse(Console.ReadLine());
@@ -388,10 +389,34 @@ namespace Airport_2
                         {
                             Console.Write("please enter the Id of the flight: ");
                             string ID = Console.ReadLine();
-                            Console.Write("Enter the seat number please: ");
-                            int seatNumber = int.Parse(Console.ReadLine());
-                            Console.WriteLine("Whar is the type of your ticket?\n1.Economy\n2.Business\n3.FirstClass");
-                            int type = int.Parse(Console.ReadLine());
+                            int seatNumber;
+                            while (true)
+                            {
+                                Console.Write("Enter the seat number please: ");
+                                try
+                                {
+                                    seatNumber = int.Parse(Console.ReadLine());
+                                    break;
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("Please enter a number");
+                                }
+                            }
+                            int type;
+                            while (true)
+                            {
+                                Console.WriteLine("What is the type of your ticket?\n1.Economy\n2.Business\n3.FirstClass");
+                                try
+                                {
+                                    type = int.Parse(Console.ReadLine());
+                                    break;
+                                }
+                                catch
+                                {
+                                    Console.WriteLine("Please enter a number");
+                                }
+                            }
                             User.AddUserToFlight(CurrentUser, ID, seatNumber, type);
                         }
                         else
@@ -417,6 +442,16 @@ namespace Airport_2
 
             }
 
+        }
+
+        private static string GenerateRandomKey(int v)
+        {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                byte[] keyBytes = new byte[v];
+                rng.GetBytes(keyBytes);
+                return Convert.ToBase64String(keyBytes);
+            }
         }
     }
 }

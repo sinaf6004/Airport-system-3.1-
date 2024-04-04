@@ -142,19 +142,39 @@ namespace Airport_2
             }
         }
 
-        public static void AddPassenger(Passenger passenger, string Id, string username)
+        public static bool AddPassenger(Passenger passenger, string Id, string username, int seat)
         {
             for (int i = 0; i < flights.Count; i++)
             {
                 if (flights[i].Id == Id)
                 {
-                    flights[i].passengers.Add(passenger);
-                    flights[i].FreeSeats--;
-                    flights[i].PassengerMembers++;
-                    User.AddFLight(flights[i], username);
-                    break;
+                    int t = 0;
+                    foreach (Passenger passenger1 in flights[i].passengers)
+                    {
+                        if (passenger1.seatNumber == seat)
+                        {
+                            t = 1;
+                        }
+                    }
+                    if (t == 0)
+                    {
+
+                        flights[i].passengers.Add(passenger);
+                        flights[i].FreeSeats--;
+                        flights[i].PassengerMembers++;
+                        User.AddFLight(flights[i], username);
+                        return true;
+                    }
+                    else
+                    {
+
+                        Console.WriteLine("This seat number is already booked");
+                        return false;
+                    }
                 }
             }
+            Console.WriteLine("Could not find a flight with such an Id");
+            return false;
             //passengers.Add(passenger);
         }
         public static void SearchByUsername(string Id, string UserName)
@@ -528,12 +548,12 @@ namespace Airport_2
                 }
             }
         }
-        public static void SearchByStartTime(int x , int h)
+        public static void SearchByStartTime(int x, int h)
         {
             int a = 1;
             foreach (var flight in flights)
             {
-                if ((x<=int.Parse(flight.StartTime))&&(h>=int.Parse(flight.StartTime)))
+                if ((x <= int.Parse(flight.StartTime)) && (h >= int.Parse(flight.StartTime)))
                 {
                     Console.WriteLine(a + ". " + "Id: " + flight.Id + " Start time: " + flight.StartTime);
                     a++;
@@ -547,16 +567,16 @@ namespace Airport_2
             {
                 if ((x <= int.Parse(flight.EndTime)) && (h >= int.Parse(flight.EndTime)))
                 {
-                    Console.WriteLine(a + ". " + "Id: " + flight.Id+ " End time: " + flight.EndTime);
+                    Console.WriteLine(a + ". " + "Id: " + flight.Id + " End time: " + flight.EndTime);
                     a++;
                 }
             }
         }
         public bool checkId(string Id, string UserName)
         {
-            if(this.Id == Id)
+            if (this.Id == Id)
             {
-                for(int i = 0; i<passengers.Count; i++)
+                for (int i = 0; i < passengers.Count; i++)
                 {
                     if (passengers[i].userName == UserName)
                     {
@@ -571,7 +591,7 @@ namespace Airport_2
         }
         public static void giveFreeseats()
         {
-            foreach(Flight flight in flights)
+            foreach (Flight flight in flights)
             {
                 try
                 {

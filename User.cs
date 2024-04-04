@@ -15,9 +15,9 @@ namespace Airport_2
         static List<User> list = new List<User>();
         public static List<User> users { get => list; }
         string UserName;
-        public string  userName { get => UserName;}
+        public string userName { get => UserName; }
         string Password;
-        public string  password { get=>Password;}
+        public string password { get => Password; }
         string Name;
         string FamilyName;
         int Age;
@@ -36,7 +36,7 @@ namespace Airport_2
         List<Flight> flights = new List<Flight>();
         public bool CheckPassword(string password)
         {
-            if(password == Password)
+            if (password == Password)
             {
                 return true;
             }
@@ -65,6 +65,10 @@ namespace Airport_2
         {
             FileStream stream = new FileStream(@"D:\elmos\AP\homeworks\tamrin 3\Airport 2\Airport 2\bin\Debug\Users.txt", FileMode.Create);
             BinaryFormatter formatter = new BinaryFormatter();
+            foreach (var user in list)
+            {
+                user.Password = Encrypting.encrypting(user.Password, "VXAQtfAhbuNL/nR0T0VQWw==");
+            }
             formatter.Serialize(stream, list);
             stream.Close();
         }
@@ -73,25 +77,36 @@ namespace Airport_2
             FileStream fs = File.Open(@"D:\elmos\AP\homeworks\tamrin 3\Airport 2\Airport 2\bin\Debug\Users.txt", FileMode.Open);
             BinaryFormatter formatter = new BinaryFormatter();
             list = (List<User>)formatter.Deserialize(fs);
+            foreach (var user in users)
+            {
+                user.Password = Encrypting.decrypting(user.Password, "VXAQtfAhbuNL/nR0T0VQWw==");
+            }
+
             fs.Close();
 
         }
         public static void AddUserToFlight(string Username, string Id, int seatNumber, int flight)
         {
+            int t = 0;
             for (int i = 0; i < users.Count; i++)
             {
                 if (users[i].UserName == Username)
                 {
-                    Passenger passenger = new Passenger(users[i].UserName, Id, seatNumber,flight, users[i].Name,users[i].FamilyName, users[i].Age, users[i].gender);
-                    passenger.addPassengerToFlight();
+                    t = 1;
+                    Passenger passenger = new Passenger(users[i].UserName, Id, seatNumber, flight, users[i].Name, users[i].FamilyName, users[i].Age, users[i].gender);
+                    passenger.addPassengerToFlight(seatNumber);
 
                     break;
                 }
             }
+            if (t == 0)
+            {
+                Console.WriteLine("Could not find this UserName among the users");
+            }
         }
         public static void AddFLight(Flight flight, string username)
         {
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 if (user.UserName == username)
                 {
@@ -100,11 +115,11 @@ namespace Airport_2
                 }
             }
         }
-        public static bool CheckUsername (string username)
+        public static bool CheckUsername(string username)
         {
-            foreach(var user in users)
+            foreach (var user in users)
             {
-                if(user.UserName == username)
+                if (user.UserName == username)
                 {
                     return false;
                 }
@@ -114,11 +129,11 @@ namespace Airport_2
 
         public static void CancellFlight(string UserName)
         {
-            foreach(User user in users)
+            foreach (User user in users)
             {
-                if(user.UserName == UserName)
+                if (user.UserName == UserName)
                 {
-                     user.cancellFLight();
+                    user.cancellFLight();
                 }
             }
 
@@ -127,7 +142,7 @@ namespace Airport_2
         {
             Console.Write("Flight Id: ");
             string flightId = Console.ReadLine();
-            for(int i = 0; i< flights.Count; i++)
+            for (int i = 0; i < flights.Count; i++)
             {
                 if (flights[i].checkId(flightId, UserName))
                 {
@@ -135,7 +150,7 @@ namespace Airport_2
                 }
             }
         }
-        
+
     }
 }
 
